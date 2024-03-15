@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google Tag Manager -->
+    <!-- End Google Tag Manager -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>옷을 얻었습니다</title>
+    <link href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css" rel="stylesheet">
+    <link href="./_css/get_item.css" rel="stylesheet">
+    <style>
+        .next {
+            top:0px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <!-- End Google Tag Manager (noscript) -->
+    <div class="canvas">
+        <img src="https://i.imgur.com/hl1Smgd.png" alt="huku2get">
+        <div class="next" id="nextButton">다음으로 넘어가기</div>
+    </div>
+  
+    <script>
+        function getCookie(name) {
+            const cookieName = `${name}=`;
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                let cookie = cookies[i].trim();
+                if (cookie.indexOf(cookieName) === 0) {
+                    return cookie.substring(cookieName.length, cookie.length);
+                }
+            }
+            return null;
+        }
+
+        function setCookie(name, value, days) {
+            // const expires = new Date();
+            // expirationDate.setDate(expirationDate.getDate() + days);
+            var expirationDate = new Date();
+            expirationDate.setDate(expirationDate.getDate() + 7); // 7일 후로 설정 예시
+            const cookieValue = `${name}=${value}; expires=${expirationDate.toUTCString()}; path=/`;
+            document.cookie = cookieValue;
+            console.log("Cookie set successfully with expiration date:", expirationDate);
+        }
+        
+        function handleResize() {
+            const canvas = document.getElementById('canvas');
+            const image = document.getElementById('image');
+            const nextButton = document.getElementById('nextButton');
+            
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            
+            // 반응형 이미지 사이즈 설정
+            const canvasWidth = 940; // 이미지 원래 너비
+            const canvasHeight = 840; // 이미지 원래 높이
+
+            let newWidth = windowWidth * 0.8; // 이미지 너비를 화면 너비의 80%로 설정
+            let newHeight = (newWidth * canvasHeight) / canvasWidth; // 이미지 비율에 맞게 높이 계산
+
+            if (newHeight > windowHeight * 0.8) { // 이미지 높이가 화면 높이의 80%보다 크면
+                newHeight = windowHeight * 0.8; // 이미지 높이를 화면 높이의 80%로 설정
+                newWidth = (newHeight * canvasWidth) / canvasHeight; // 이미지 비율에 맞게 너비 계산
+            }
+
+            canvas.style.width = newWidth + 'px';
+            canvas.style.height = newHeight + 'px';
+
+            // 반응형 텍스트 크기 설정
+            nextButton.style.fontSize = 3 * (windowWidth / 250) + 'px'; // 화면 너비에 따라 크기 조절
+        }
+        // 엔터 키를 누르면 다음 페이지로 이동하는 함수
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+
+                // 현재 player_id 읽어오기
+                const player_id = getCookie('player_id');
+                if (player_id) {
+                    setCookie('player_id', player_id, 30);
+                    window.location.href = 'stage3.html';
+                } else {
+                console.error('Player ID not found in cookies.');
+                }
+            }
+        }
+    
+        // 엔터 키 이벤트 리스너 등록
+        document.addEventListener("keydown", handleKeyPress);
+    
+        // 다음으로 넘어가기 텍스트를 클릭하여도 다음 페이지로 이동
+        document.getElementById("nextButton").addEventListener("click", function() {
+            window.location.href = "stage3.html";
+        });
+
+        // 초기 실행 및 리사이징 이벤트 추가
+        window.addEventListener('resize', handleResize);
+        handleResize();
+    </script>
+</body>
+</html>

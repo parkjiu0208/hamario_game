@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stage 0</title>
+    <link href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css" rel="stylesheet">
+    <link href="./_css/style.css" rel="stylesheet">
+    <!-- Google Tag Manager -->
+
+    <!-- End Google Tag Manager -->
+
+</head>
+<body>
+
+    <div class="consent-box" id="동의박스ID">
+        <h2>우주하마의 두근두근 데이트</h2>
+        <button id="동의버튼ID">게임시작</button>
+    </div>
+
+    <div id="imageContainer"></div>
+    <script>
+        // generateNewPlayerId 함수 정의
+        function generateNewPlayerId() {
+            // 무작위 문자열로 플레이어 ID 생성
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            const playerIdLength = 10;
+
+            let playerId = '';
+            for (let i = 0; i < playerIdLength; i++) {
+                const randomIndex = Math.floor(Math.random() * characters.length);
+                playerId += characters.charAt(randomIndex);
+            }
+
+            return playerId;
+        }
+
+        function getCookie(name) {
+        const cookies = document.cookie.split('; ');
+        for (const cookie of cookies) {
+            const [cookieName, cookieValue] = cookie.split('=');
+            if (cookieName === name) {
+                return cookieValue;
+            }
+            }
+            return null;
+        }
+
+        function setCookie(name, value, days) {
+            var expirationDate = new Date();
+            expirationDate.setDate(expirationDate.getDate() + 7); // 7일 후로 설정 예시
+            const cookieValue = `${name}=${value}; expires=${expirationDate.toUTCString()}; path=/`;
+            document.cookie = cookieValue;
+            console.log("Cookie set successfully with expiration date:", expirationDate);
+        }
+
+        function showImages() {
+            const imageContainer = document.getElementById('imageContainer');
+            const consentBox = document.getElementById('동의박스ID');
+            consentBox.style.display = 'none';
+        	
+	        // player_id 생성 또는 쿠키에서 읽어오기
+            const existingPlayerId = getCookie('player_id');
+            const player_id = existingPlayerId || generateNewPlayerId();
+            setCookie('player_id', player_id, 30);
+
+            const gameImage = new Image();
+            gameImage.src = 'https://i.imgur.com/z7wJqLb.png';
+            gameImage.style.display = 'block';
+            gameImage.style.position = 'absolute';
+            gameImage.style.left = '50%';
+            gameImage.style.top = '50%';
+            gameImage.style.transform = 'translate(-50%, -50%)';
+            gameImage.style.width = 'auto'; // 이미지 너비 조절
+            gameImage.style.height = '100vh'; // 이미지 높이 조절
+            gameImage.style.maxWidth = '980px'; // 이미지 너비 조절
+            gameImage.style.maxHeight = '840px'; // 이미지 높이 조절
+        
+            const titleImage = new Image();
+            titleImage.src = 'https://i.imgur.com/O2H9mZI.png';
+            titleImage.style.maxWidth = '100%';
+            titleImage.style.maxHeight = '100%';
+            titleImage.style.display = 'block';
+            titleImage.style.position = 'absolute';
+            titleImage.style.left = '50%';
+            titleImage.style.top = '20%';
+            titleImage.style.transform = 'translate(-50%, -50%)';
+            titleImage.style.width = '40%'; // 40%로 조정
+            titleImage.style.height = 'auto'; // 가로 비율에 맞게 자동 조절
+        
+            const textElement = document.createElement('div');
+            textElement.textContent = 'Press Enter Key';
+            textElement.style.position = 'absolute';
+            textElement.style.color = 'white';
+            textElement.style.fontSize = '48px';
+            textElement.style.fontFamily = 'Calibri, sans-serif';
+            textElement.style.top = '80%';
+            textElement.style.left = '50%';
+            textElement.style.transform = 'translateX(-50%)';
+        
+            function addImagesToContainer() {
+                imageContainer.appendChild(gameImage);
+                imageContainer.appendChild(titleImage);
+                imageContainer.appendChild(textElement);
+            }
+        
+            function adjustContainerSize() {
+                const windowWidth = window.innerWidth;
+                const windowHeight = window.innerHeight;
+        
+                imageContainer.style.width = windowWidth + 'px';
+                imageContainer.style.height = windowHeight + 'px';
+            }
+        
+            window.addEventListener('resize', function() {
+                adjustContainerSize();
+            });
+        
+            addImagesToContainer();
+        
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    // 쿠키에 player_id 추가하여 전달
+                    setCookie('player_id', player_id, 30);
+                    window.location.href = 'stageStart.html';
+                }
+            });
+        }
+        
+        const consentButton = document.getElementById('동의버튼ID');
+        consentButton.addEventListener('click', function() {
+            showImages();
+        });
+        
+        
+    </script>
+    <script src="./_js/phaser.min.js"></script>
+    <!-- Google Tag Manager (noscript) -->
+    <!-- End Google Tag Manager (noscript) -->
+</body>
+</html>

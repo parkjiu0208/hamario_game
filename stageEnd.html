@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>End</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: black; /* 배경색을 검은색으로 설정 */
+            display: flex;
+            justify-content: center; /* 가로 중앙 정렬 */
+            align-items: center; /* 세로 중앙 정렬 */
+            height: 100vh; /* 화면 전체 높이로 설정 */
+            position: relative; /* 이미지들의 위치를 설정하기 위해 추가 */
+        }
+
+        .canvas {
+            width: 980px; /* 캔버스 너비 설정 */
+            height: 840px; /* 캔버스 높이 설정 */
+            max-width: 100%; /* 최대 너비 설정 */
+            max-height: 100%; /* 최대 높이 설정 */
+            position: relative; /* 이미지들의 위치를 설정하기 위해 추가 */
+        }
+
+        img {
+            width: 100%; /* 이미지 너비 설정 */
+            height: auto; /* 높이 자동 조절 */
+            position: absolute; /* 이미지들을 겹치게 하기 위해 추가 */
+            top: 50%; /* 부모 요소의 상단에서 절반 떨어진 위치 */
+            left: 50%; /* 부모 요소의 왼쪽에서 절반 떨어진 위치 */
+            transform: translate(-50%, -50%); /* 이미지를 정 중앙으로 이동시킴 */
+            opacity: 0; /* 초기에 모든 이미지를 숨김 */
+            transition: opacity 0.5s ease-in-out; /* 부드러운 전환 효과를 위한 CSS transition */
+        }
+
+        img.active {
+            opacity: 1; /* active 클래스가 적용된 이미지만 보이도록 함 */
+        }
+    </style>
+</head>
+<body>
+    <div class="canvas">
+        <img src="https://i.imgur.com/12udJht.png" alt="End1" class="active">
+        <img src="https://i.imgur.com/7clhCsH.png" alt="End2">
+    </div>
+    
+    <script>
+        function getCookie(name) {
+            const cookieName = `${name}=`;
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                let cookie = cookies[i].trim();
+                if (cookie.indexOf(cookieName) === 0) {
+                    return cookie.substring(cookieName.length, cookie.length);
+                }
+            }
+            return null;
+        }
+
+        function setCookie(name, value, days) {
+            // const expires = new Date();
+            // expirationDate.setDate(expirationDate.getDate() + days);
+            var expirationDate = new Date();
+            expirationDate.setDate(expirationDate.getDate() + 7); // 7일 후로 설정 예시
+            const cookieValue = `${name}=${value}; expires=${expirationDate.toUTCString()}; path=/`;
+            document.cookie = cookieValue;
+            console.log("Cookie set successfully with expiration date:", expirationDate);
+        }
+        function handleResize() {
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const canvas = document.querySelector('.canvas');
+            const canvasRatio = 980 / 840;
+
+            // 반응형 이미지 크기 설정
+            if (windowWidth / windowHeight > canvasRatio) {
+                canvas.style.width = windowHeight * canvasRatio * 0.8 + 'px';
+            } else {
+                canvas.style.width = windowWidth * 0.8 + 'px';
+            }
+        }
+
+        function saveReview() {
+            // 선택한 별점 가져오기
+            const stars = document.querySelector('input[name="rating"]:checked').value;
+
+            // 리뷰 가져오기
+            const review = document.getElementById('review').value;
+
+            // 튜플로 묶어서 변수에 저장
+            const userReview = { stars: stars, review: review };
+
+            // 입력 필드 초기화
+            document.getElementById('review').value = ''; // 리뷰 초기화
+
+            // 선택된 별점 해제
+            const starRadios = document.querySelectorAll('input[name="rating"]');
+            starRadios.forEach(radio => {
+                radio.checked = false;
+            });
+
+            // 리뷰 및 별점 확인하기 (콘솔에 출력)
+            console.log('별점:', userReview.stars);
+            console.log('리뷰:', userReview.review);
+
+            // 리뷰가 전송된 후 페이지 이동
+            window.location.href = 'stage0.html';
+        }
+
+        // 초기 실행 및 리사이징 이벤트 추가
+        window.addEventListener('resize', handleResize);
+        handleResize();
+
+        // JavaScript로 이미지 변경 기능 추가
+        document.addEventListener('keydown', function(event) {
+            const activeImage = document.querySelector('.active');
+            const isEnd2 = activeImage.alt === 'End2'; // 현재 이미지가 End2인지 확인
+
+            if (event.key === 'Enter' && isEnd2) {
+                // End2 이미지에서 엔터를 누르면 review.html로 이동
+                // 현재 player_id 읽어오기
+                const player_id = getCookie('player_id');
+                if (player_id) {
+                    setCookie('player_id', player_id, 30);
+                    window.location.href = 'review.html';
+                } else {
+                console.error('Player ID not found in cookies.');
+                }
+            } else {
+                const nextImage = activeImage.nextElementSibling;
+
+                if (nextImage !== null) {
+                    activeImage.classList.remove('active');
+                    nextImage.classList.add('active');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

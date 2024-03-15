@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>별점과 리뷰</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: black;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .rating {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #fff;
+    }
+    .stars {
+      display: flex;
+      flex-direction: row-reverse; /* 별들을 오른쪽부터 나열 */
+      margin-bottom: 10px;
+    }
+    .stars input {
+      display: none;
+    }
+    .stars label {
+      font-size: 40px;
+      color: #666;
+      cursor: pointer;
+      transition: color 0.3s;
+      order: 5; /* 별 아이콘 순서 변경 */
+    }
+    .stars input:checked ~ label {
+      color: #ffcc00;
+    }
+    .review-textarea {
+      width: 300px;
+      height: 100px;
+      padding: 10px;
+      font-size: 16px;
+      resize: vertical;
+      margin-bottom: 20px;
+      color: #000;
+      background-color: #f4f4f4;
+      border: none;
+      border-radius: 5px;
+      outline: none;
+    }
+    .submit-btn {
+      padding: 12px 24px; /* 버튼 크기 조정 */
+      font-size: 18px;
+      border: none;
+      border-radius: 5px;
+      background-color: white;
+      color: black;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .submit-btn:hover {
+      background-color: #0056b3;
+    }
+    .thanks-message {
+      font-size: 24px; /* 플레이 해주셔서 감사합니다 텍스트 크기 조정 */
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px; /* 마진 조정 */
+    }
+  </style>
+</head>
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aws-sdk/2.1530.0/aws-sdk.min.js"></script>
+  <div class="rating">
+    <div class="thanks-message">플레이 해주셔서 감사합니다</div>
+    <div class="stars">
+      <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
+      <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+      <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+      <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+      <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+    </div>
+    <textarea class="review-textarea" id="review" placeholder="리뷰를 입력해주세요..."></textarea>
+    <button class="submit-btn" onclick="saveReview()">제출</button>
+  </div>
+
+  <script>
+    function saveReview() {
+      // 선택한 별점 가져오기
+      const stars = document.querySelector('input[name="rating"]:checked').value;
+
+      // 리뷰 가져오기
+      const review = document.getElementById('review').value;
+
+      // 튜플로 묶어서 변수에 저장
+      const userReview = { stars: stars, review: review };
+
+      // 입력 필드 초기화
+      document.getElementById('review').value = '';
+
+      // 선택된 별점 해제
+      const starRadios = document.querySelectorAll('input[name="rating"]');
+      starRadios.forEach(radio => {
+        radio.checked = false;
+      });
+
+      // 리뷰 및 별점 확인하기 (콘솔에 출력)
+      console.log('별점:', userReview.stars);
+      console.log('리뷰:', userReview.review);
+
+      // CloudWatch Logs에 리뷰 데이터 전송
+      sendReviewToCloudWatch(userReview);
+
+      // 리뷰가 전송된 후 페이지 이동
+      window.location.href = 'stage0.html';
+    }
+
+    function sendReviewToCloudWatch(userReview) {
+      // AWS 계정 자격 증명 설정
+      
+
+      // AWS CloudWatch Logs 객체 생성
+      const cloudwatchlogs = new AWS.CloudWatchLogs();
+
+      // review 그룹 및 스트림 설정
+      let logGroupName = 'hama_game';
+      let reviewLogStreamName = 'review';
+
+      // 로그 스트림이 없으면 생성
+      cloudwatchlogs.createLogStream({
+        logGroupName: logGroupName,
+        logStreamName: reviewLogStreamName
+      }, function (err, data) {
+        if (err && err.code !== 'ResourceAlreadyExistsException') {
+          console.error('Error creating log stream:', err);
+        } else {
+          // 리뷰 이벤트 생성
+          const reviewLogEvent = {
+            logGroupName: logGroupName,
+            logStreamName: reviewLogStreamName,
+            logEvents: [{
+              message: JSON.stringify(userReview),
+              timestamp: new Date().getTime()
+            }]
+          };
+
+          // 로그 이벤트를 CloudWatch Logs에 전송
+          cloudwatchlogs.putLogEvents(reviewLogEvent, function (err, data) {
+            if (err) {
+              console.error('Error sending logs to CloudWatch Logs:', err);
+            } else {
+              console.log('Game review log sent to CloudWatch Logs:', data);
+            }
+          });
+        }
+      });
+    }
+  </script>
+</body>
+</html>
