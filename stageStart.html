@@ -41,30 +41,11 @@
 </head>
 <body>
     <div class="canvas">
-        <img src="https://i.imgur.com/zP1VBXd.png" alt="Start1" class="active">
-        <img src="https://i.imgur.com/VIobt26.png" alt="Start2">
+        <img src="res/etc/zP1VBXd.png" alt="Start1" class="active">
+        <img src="res/etc/VIobt26.png" alt="Start2">
     </div>
   
     <script>
-        function getCookie(name) {
-            const cookieName = `${name}=`;
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                let cookie = cookies[i].trim();
-                if (cookie.indexOf(cookieName) === 0) {
-                    return cookie.substring(cookieName.length, cookie.length);
-                }
-            }
-            return null;
-        }
-
-        function setCookie(name, value, days) {
-            var expirationDate = new Date();
-            expirationDate.setDate(expirationDate.getDate() + 7); // 7일 후로 설정
-            const cookieValue = `${name}=${value}; expires=${expirationDate.toUTCString()}; path=/`;
-            document.cookie = cookieValue;
-            console.log("Cookie set successfully with expiration date:", expirationDate);
-        }
         
         function handleResize() {
             const windowWidth = window.innerWidth;
@@ -88,16 +69,9 @@
         document.addEventListener('keydown', function(event) {
             const activeImage = document.querySelector('.active');
 
-            if (event.key === 'Enter' && activeImage.src === 'https://i.imgur.com/VIobt26.png') {
+            if (event.key === 'Enter' && activeImage.getAttribute('src') === 'res/etc/VIobt26.png') {
                 // Start2 이미지일 때 stage1.html로 이동
-                // 현재 player_id 읽어오기
-                const player_id = getCookie('player_id');
-                if (player_id) {
-                    setCookie('player_id', player_id, 30);
-                    window.location.href = 'stage1.html';
-                } else {
-                console.error('Player ID not found in cookies.');
-                }
+                window.location.href = 'stage1.html';
             } else {
                 const nextImage = activeImage.nextElementSibling;
                 if (nextImage !== null) {
@@ -106,6 +80,7 @@
                     nextImage.classList.add('active');
                 }
             }
+
         });
     </script>
 </body>

@@ -18,32 +18,12 @@
     <!-- Google Tag Manager (noscript) -->
     <!-- End Google Tag Manager (noscript) -->
     <div class="canvas">
-        <img src="https://i.imgur.com/hl1Smgd.png" alt="huku2get">
+        <img src="res/item/huku2get.png" alt="huku2get">
         <div class="next" id="nextButton">다음으로 넘어가기</div>
     </div>
   
     <script>
-        function getCookie(name) {
-            const cookieName = `${name}=`;
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                let cookie = cookies[i].trim();
-                if (cookie.indexOf(cookieName) === 0) {
-                    return cookie.substring(cookieName.length, cookie.length);
-                }
-            }
-            return null;
-        }
 
-        function setCookie(name, value, days) {
-            // const expires = new Date();
-            // expirationDate.setDate(expirationDate.getDate() + days);
-            var expirationDate = new Date();
-            expirationDate.setDate(expirationDate.getDate() + 7); // 7일 후로 설정 예시
-            const cookieValue = `${name}=${value}; expires=${expirationDate.toUTCString()}; path=/`;
-            document.cookie = cookieValue;
-            console.log("Cookie set successfully with expiration date:", expirationDate);
-        }
         
         function handleResize() {
             const canvas = document.getElementById('canvas');
@@ -74,15 +54,7 @@
         // 엔터 키를 누르면 다음 페이지로 이동하는 함수
         function handleKeyPress(event) {
             if (event.key === "Enter") {
-
-                // 현재 player_id 읽어오기
-                const player_id = getCookie('player_id');
-                if (player_id) {
-                    setCookie('player_id', player_id, 30);
-                    window.location.href = 'stage3.html';
-                } else {
-                console.error('Player ID not found in cookies.');
-                }
+                window.location.href = 'stage3.html';
             }
         }
     

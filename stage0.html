@@ -20,52 +20,15 @@
 
     <div id="imageContainer"></div>
     <script>
-        // generateNewPlayerId 함수 정의
-        function generateNewPlayerId() {
-            // 무작위 문자열로 플레이어 ID 생성
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            const playerIdLength = 10;
-
-            let playerId = '';
-            for (let i = 0; i < playerIdLength; i++) {
-                const randomIndex = Math.floor(Math.random() * characters.length);
-                playerId += characters.charAt(randomIndex);
-            }
-
-            return playerId;
-        }
-
-        function getCookie(name) {
-        const cookies = document.cookie.split('; ');
-        for (const cookie of cookies) {
-            const [cookieName, cookieValue] = cookie.split('=');
-            if (cookieName === name) {
-                return cookieValue;
-            }
-            }
-            return null;
-        }
-
-        function setCookie(name, value, days) {
-            var expirationDate = new Date();
-            expirationDate.setDate(expirationDate.getDate() + 7); // 7일 후로 설정 예시
-            const cookieValue = `${name}=${value}; expires=${expirationDate.toUTCString()}; path=/`;
-            document.cookie = cookieValue;
-            console.log("Cookie set successfully with expiration date:", expirationDate);
-        }
-
+        
         function showImages() {
             const imageContainer = document.getElementById('imageContainer');
             const consentBox = document.getElementById('동의박스ID');
             consentBox.style.display = 'none';
         	
-	        // player_id 생성 또는 쿠키에서 읽어오기
-            const existingPlayerId = getCookie('player_id');
-            const player_id = existingPlayerId || generateNewPlayerId();
-            setCookie('player_id', player_id, 30);
 
             const gameImage = new Image();
-            gameImage.src = 'https://i.imgur.com/z7wJqLb.png';
+            gameImage.src = 'res/bg/z7wJqLb.png';
             gameImage.style.display = 'block';
             gameImage.style.position = 'absolute';
             gameImage.style.left = '50%';
@@ -77,7 +40,7 @@
             gameImage.style.maxHeight = '840px'; // 이미지 높이 조절
         
             const titleImage = new Image();
-            titleImage.src = 'https://i.imgur.com/O2H9mZI.png';
+            titleImage.src = 'res/title.png';
             titleImage.style.maxWidth = '100%';
             titleImage.style.maxHeight = '100%';
             titleImage.style.display = 'block';
@@ -120,8 +83,6 @@
         
             document.addEventListener('keydown', function(event) {
                 if (event.key === 'Enter') {
-                    // 쿠키에 player_id 추가하여 전달
-                    setCookie('player_id', player_id, 30);
                     window.location.href = 'stageStart.html';
                 }
             });

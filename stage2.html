@@ -15,32 +15,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aws-sdk/2.1530.0/aws-sdk.min.js"></script>
     <script>
-        function getCookie(name) {
-            const cookieName = `${name}=`;
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                let cookie = cookies[i].trim();
-                if (cookie.indexOf(cookieName) === 0) {
-                    return cookie.substring(cookieName.length, cookie.length);
-                }
-            }
-            return null;
-        }
 
-        function setCookie(name, value, days) {
-            var expirationDate = new Date();
-            expirationDate.setDate(expirationDate.getDate() + 7); // 7일 후로 설정
-            const cookieValue = `${name}=${value}; expires=${expirationDate.toUTCString()}; path=/`;
-            document.cookie = cookieValue;
-            console.log("Cookie set successfully with expiration date:", expirationDate);
-        }
-        document.addEventListener('DOMContentLoaded', function () {
-            // 쿠키에서 player_id 읽어오기
-            const player_id = getCookie('player_id');
-
-            // player_id를 전역 변수로 설정
-            window.player_id = player_id;
-        });
     </script>
     <script src="./_js/common.js"></script>
     <script type="module" src="./_js/stage2.js"></script>

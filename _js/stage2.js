@@ -134,20 +134,11 @@ function create() {
             
             // 시간을 멈춤
             isTimeStopped = true;
-    
-            // clear Log
-            recordGameAction(player_id, this.player.x, this.player.y, map_id, "game clear");
+
             
             // 5초 뒤에 stage1.5.html로 이동
             this.time.delayedCall(5000, function () {
-                const player_id_beforeRedirect = getCookie('player_id');
-                if (player_id_beforeRedirect) {
-                    console.log('Player ID before redirect:', player_id_beforeRedirect);
-                    window.location.href = 'stage2.5.html';
-                } else {
-                    console.log('Player ID not found before redirect.');
-                    // player_id가 없으면 에러 처리 또는 새로 생성
-                }
+                window.location.href = 'stage2.5.html';
             }, [], this);
     
             hasExecutedCallback = true; 
@@ -808,9 +799,6 @@ function create() {
     huku1.setScrollFactor(0); // 카메라에 따라 움직이지 않도록 고정
     huku1.x = 170; // 이미지의 x 위치 설정
     huku1.y = 230; // 이미지의 y 위치 설정
-
-    // StartLogEvent
-    recordGameAction(player_id, this.player.x, this.player.y, map_id, "game start");
 }
 // ================================================================== //
 // 뱀 초기화
@@ -1497,9 +1485,6 @@ function update() {
         var deathSound = this.sound.add('death');
         deathSound.play();
 
-        // FallingDeathLogEvent
-        recordGameAction(player_id, this.player.x, this.player.y, map_id, "Fall deaths");
-
         const hitText1 = this.add.text(this.player.x + 10, this.player.y - 50, 'ㅋㅋ', { 
             fontSize: '15px', 
             fill: '#fff', 
@@ -1609,9 +1594,6 @@ function playerHitEnemy(player, enemy) {
     if (player.y + 7 > enemy.y) {
         player_config.deathCount--;
         player_config.SankedeathCount++;
-
-        // enemyDeathLogEvent
-        recordGameAction(player_id, this.player.x, this.player.y, map_id, "enemy deaths");
 
         // 배경 음악을 찾아서 일시 정지
         var bgm = this.sound.get('bgm');
@@ -1732,10 +1714,6 @@ function playerHitTree(player, tree) {
         player_config.deathCount--;
         player_config.TreedeathCount++;
 
-        // TreeDeathLogEvent
-        recordGameAction(player_id, this.player.x, this.player.y, map_id, "Tree deaths");
-
-
         // 배경 음악을 찾아서 일시 정지
         var bgm = this.sound.get('bgm');
         bgm.pause();
@@ -1853,8 +1831,6 @@ function playerHitMob(player, mob) {
     player_config.deathCount--;
     player_config.MobdeathCount++;
 
-    // MobDeathLogEvent
-    recordGameAction(player_id, this.player.x, this.player.y, map_id, "Mob deaths");
 
     // 배경 음악을 찾아서 일시 정지
     var bgm = this.sound.get('bgm');
@@ -1971,9 +1947,6 @@ function playerHitCloud(player, cloud){
     player_config.ClouddeathCount++;
     cloud.setTexture('cloud3');
 
-    // cloud death Log
-    recordGameAction(player_id, this.player.x, this.player.y, map_id, "cloud deaths");
-
     // 배경 음악을 찾아서 일시 정지
     var bgm = this.sound.get('bgm');
     bgm.pause();
@@ -2089,9 +2062,6 @@ function savePlayerPosition(player, savePoint) {
     // 세이브 포인트의 좌표를 저장
     savePointCoordinates.x = savePoint.x;
     savePointCoordinates.y = savePoint.y;
-
-    // save point Log
-    recordGameAction(player_id, this.player.x, this.player.y, map_id, "save point");
 
     // 세이브 포인트 이미지 없애기
     savePoint.disableBody(true, true);
